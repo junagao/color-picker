@@ -93,6 +93,7 @@ export const ImageSelect = ({setImage}: ImageSelectProps) => {
                       shadow-violet-7-sm
                       hover:shadow-violet-8-sm
                       focus-visible:outline-violet-11
+                      dark:text-violet-4
                     `}
                     id="imageUrl"
                     onChange={handleOpenImageUrl}
