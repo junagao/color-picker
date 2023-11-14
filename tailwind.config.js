@@ -25,6 +25,9 @@ export default {
         'slide-right-and-fade': 'slideRightAndFade 400ms cubic-bezier(0.16, 1, 0.3, 1)',
         'slide-down-and-fade': 'slideDownAndFade 400ms cubic-bezier(0.16, 1, 0.3, 1)',
         'slide-left-and-fade': 'slideLeftAndFade 400ms cubic-bezier(0.16, 1, 0.3, 1)',
+        hide: 'hide 100ms ease-in',
+        slideIn: 'slideIn 150ms cubic-bezier(0.16, 1, 0.3, 1)',
+        swipeOut: 'swipeOut 100ms ease-out',
       },
       keyframes: {
         slideUpAndFade: {
@@ -43,9 +46,24 @@ export default {
           from: {opacity: 0, transform: 'translateX(2px)'},
           to: {opacity: 1, transform: 'translateX(0)'},
         },
+        hide: {
+          from: {opacity: 1},
+          to: {opacity: 0},
+        },
+        slideIn: {
+          from: {transform: 'translateX(calc(100% + 24px))'},
+          to: {transform: 'translateX(0)'},
+        },
+        swipeOut: {
+          from: {transform: 'translateX(var(--radix-toast-swipe-end-x))'},
+          to: {transfrom: 'translateX(calc(100% + 24px))'},
+        },
       },
       willChange: {
         'transform-opacity': 'transform, opacity',
+      },
+      translate: {
+        center: 'translate(-50%, -50%)',
       },
     },
   },

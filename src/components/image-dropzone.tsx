@@ -1,12 +1,12 @@
-import {Dispatch, SetStateAction, useRef, ReactNode} from 'react'
+import {Dispatch, SetStateAction, useRef, ReactNode, RefObject} from 'react'
 
 type DropzoneProps = {
-  setImage: Dispatch<SetStateAction<string>>
   children: ReactNode
+  setImage: Dispatch<SetStateAction<string>>
 }
 
 export const ImageDropzone = ({setImage, children}: DropzoneProps) => {
-  const inputFileRef = useRef<HTMLInputElement>(null)
+  const inputFileRef: RefObject<HTMLInputElement> = useRef<HTMLInputElement>(null)
 
   const handleDragOver = (e: {preventDefault: () => void}) => {
     e.preventDefault()
@@ -19,11 +19,10 @@ export const ImageDropzone = ({setImage, children}: DropzoneProps) => {
   }) => {
     e.preventDefault()
     const files = e.dataTransfer.files
-
-    const fileReader = new FileReader()
+    const fileReader: FileReader = new FileReader()
     fileReader.readAsDataURL(files[0])
     fileReader.onloadend = readEvent => {
-      const targetResultUrl = readEvent.target?.result?.toString()
+      const targetResultUrl: string | undefined = readEvent.target?.result?.toString()
       if (targetResultUrl) setImage(targetResultUrl)
     }
   }

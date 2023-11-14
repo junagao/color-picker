@@ -1,6 +1,6 @@
 import {Dispatch, SetStateAction, useState} from 'react'
-import * as Popover from '@radix-ui/react-popover'
 import {Cross2Icon, ImageIcon} from '@radix-ui/react-icons'
+import * as Popover from '@radix-ui/react-popover'
 import {ImageDropzone} from './image-dropzone'
 
 type ImageSelectProps = {
@@ -20,10 +20,11 @@ export const ImageSelect = ({setImage}: ImageSelectProps) => {
   }
 
   return (
-    <Popover.Root>
-      <Popover.Trigger asChild>
-        <button
-          className={`
+    <div className="flex justify-end">
+      <Popover.Root>
+        <Popover.Trigger asChild>
+          <button
+            className={`
             rounded-full
             h-8
             w-8
@@ -37,14 +38,14 @@ export const ImageSelect = ({setImage}: ImageSelectProps) => {
             focus:shadow-violet-8-sm
             focus-visible:outline-violet-11
           `}
-          aria-label="Select image"
-        >
-          <ImageIcon />
-        </button>
-      </Popover.Trigger>
-      <Popover.Portal>
-        <Popover.Content
-          className={`
+            aria-label="Select image"
+          >
+            <ImageIcon />
+          </button>
+        </Popover.Trigger>
+        <Popover.Portal>
+          <Popover.Content
+            className={`
             rounded
             p-5
             w-80
@@ -57,17 +58,17 @@ export const ImageSelect = ({setImage}: ImageSelectProps) => {
             data-[side=bottom]:animate-slide-up-and-fade
             data-[side=left]:animate-slide-right-and-fade
           `}
-          sideOffset={5}
-        >
-          <div className="flex flex-col gap-2">
-            <p className="mb-2 text-base text-neutral-700 font-medium leading-5">Select Image</p>
-            <div className="flex gap-2">
-              <fieldset className="flex items-center gap-4">
-                <label className="text-sm text-violet-11" htmlFor="imageUrl">
-                  Image Url
-                </label>
-                <input
-                  className={`
+            sideOffset={5}
+          >
+            <div className="flex flex-col gap-2">
+              <p className="mb-2 text-base text-neutral-700 font-medium leading-5">Select Image</p>
+              <div className="flex gap-2">
+                <fieldset className="flex items-center gap-4">
+                  <label className="text-sm text-violet-11" htmlFor="imageUrl">
+                    Image Url
+                  </label>
+                  <input
+                    className={`
                     w-full
                     inline-flex
                     justify-center
@@ -84,22 +85,22 @@ export const ImageSelect = ({setImage}: ImageSelectProps) => {
                     hover:shadow-violet-8-sm
                     focus-visible:outline-violet-11
                   `}
-                  id="imageUrl"
-                  onChange={handleOpenImageUrl}
-                />
-              </fieldset>
-              <button
-                className="bg-violet-11 rounded text-sm inline-flex justify-center items-center px-2 py-1 text-white"
-                onClick={handleAddImageUrl}
-              >
-                Add
-              </button>
+                    id="imageUrl"
+                    onChange={handleOpenImageUrl}
+                  />
+                </fieldset>
+                <button
+                  className="bg-violet-11 rounded text-sm inline-flex justify-center items-center px-2 py-1 text-white"
+                  onClick={handleAddImageUrl}
+                >
+                  Add
+                </button>
+              </div>
+              <p className="text-neutral-600 text-sm">or</p>
+              <ImageDropzone setImage={setImage}>Drop another image here</ImageDropzone>
             </div>
-            <p className="text-neutral-600 text-sm">or</p>
-            <ImageDropzone setImage={setImage}>Drop another image here</ImageDropzone>
-          </div>
-          <Popover.Close
-            className={`
+            <Popover.Close
+              className={`
               rounded-full
               h-7
               w-7
@@ -113,13 +114,14 @@ export const ImageSelect = ({setImage}: ImageSelectProps) => {
               hover:bg-violet-4
               focus:shadow-violet-7-sm
             `}
-            aria-label="Close"
-          >
-            <Cross2Icon />
-          </Popover.Close>
-          <Popover.Arrow className="fill-white" />
-        </Popover.Content>
-      </Popover.Portal>
-    </Popover.Root>
+              aria-label="Close"
+            >
+              <Cross2Icon />
+            </Popover.Close>
+            <Popover.Arrow className="fill-white" />
+          </Popover.Content>
+        </Popover.Portal>
+      </Popover.Root>
+    </div>
   )
 }
