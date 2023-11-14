@@ -13,16 +13,16 @@ export const Notification = ({isError, message, open, setOpen}: NotificationProp
   <>
     <Toast.Root
       className={`
-    bg-neutral-50
-    rounded-md
-    p-4
-    flex
-    items-center
-    justify-center
-    data-[state=open]:animate-slideIn
-    data-[state=closed]:animate-hide
-    data-[state=end]:animate-swipeOut
-  `}
+        bg-neutral-50
+        rounded-md
+        p-4
+        flex
+        items-center
+        justify-center
+        data-[state=open]:animate-slideIn
+        data-[state=closed]:animate-hide
+        data-[state=end]:animate-swipeOut
+      `}
       open={open}
       onOpenChange={setOpen}
       duration={2000}
@@ -32,6 +32,21 @@ export const Notification = ({isError, message, open, setOpen}: NotificationProp
         {message}
       </Toast.Description>
     </Toast.Root>
-    <Toast.Viewport className="fixed bottom-0 right-0 flex flex-col gap-4 w-fit m-0 p-6 max-w-[100vw] z-50 outline-none" />
+    <Toast.Viewport
+      className={`
+        fixed
+        bottom-0
+        right-0
+        flex
+        flex-col
+        gap-4
+        w-fit
+        m-0
+        p-6
+        max-w-[100vw]
+        z-50
+        outline-none
+      `}
+    />
   </>
 )

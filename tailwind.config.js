@@ -6,14 +6,18 @@ export default {
       colors: {
         'violet-3': '#f4f0fe',
         'violet-4': '#ebe4ff',
+        'violet-8': '#aa99ec',
+        'violet-9': '#6e56cf',
         'violet-11': '#6550b9',
       },
       boxShadow: {
         'popover-sm': 'hsl(206 22% 7% / 35%) 0px 10px 38px -10px, hsl(206 22% 7% / 20%) 0px 10px 20px -15px',
+        'popover-dark-sm': 'hsl(10 10% 90% / 10%) 0px 0px 48px 0px, hsl(10 10% 90% / 5%) 0px 0px 30px -15px',
         'popover-md':
           'hsl(206 22% 7% / 35%) 0px 10px 38px -10px, hsl(206 22% 7% / 20%) 0px 10px 20px -15px, 0 0 0 2px var(--violet-7)',
         'black-sm': '0 0 0 2px black',
         'black-md': '0 2px 10px rgba(0, 0, 0, 0.5)',
+        'violet-4-sm': '0 0 0 1px #33255b',
         'violet-7-sm': '0 0 0 1px #c2b5f5',
         'violet-8-sm': '0 0 0 2px #aa99ec',
       },

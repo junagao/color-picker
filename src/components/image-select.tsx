@@ -25,19 +25,24 @@ export const ImageSelect = ({setImage}: ImageSelectProps) => {
         <Popover.Trigger asChild>
           <button
             className={`
-            rounded-full
-            h-8
-            w-8
-            inline-flex
-            justify-center
-            items-center
-            text-violet-11
-            bg-white
-            shadow-violet-7-sm
-            hover:bg-violet-3
-            focus:shadow-violet-8-sm
-            focus-visible:outline-violet-11
-          `}
+              rounded-full
+              h-8
+              w-8
+              inline-flex
+              justify-center
+              items-center
+              text-violet-11
+              bg-white
+              shadow-violet-7-sm
+              hover:bg-violet-3
+              focus:shadow-violet-8-sm
+              focus-visible:outline-violet-11
+              dark:bg-violet-11
+              dark:text-violet-4
+              dark:shadow-violet-4-sm
+              dark:hover:bg-violet-9
+              dark:focus-visible:outline-violet-8
+            `}
             aria-label="Select image"
           >
             <ImageIcon />
@@ -46,79 +51,96 @@ export const ImageSelect = ({setImage}: ImageSelectProps) => {
         <Popover.Portal>
           <Popover.Content
             className={`
-            rounded
-            p-5
-            w-80
-            bg-white
-            shadow-popover-sm
-            will-change-transform-opacity
-            focus:shadow-popover-md
-            data-[side=top]:animate-slide-down-and-fade
-            data-[side=right]:animate-slide-left-and-fade
-            data-[side=bottom]:animate-slide-up-and-fade
-            data-[side=left]:animate-slide-right-and-fade
-          `}
+              rounded
+              p-5
+              w-80
+              bg-white
+              shadow-popover-sm
+              will-change-transform-opacity
+              focus:shadow-popover-md
+              data-[side=top]:animate-slide-down-and-fade
+              data-[side=right]:animate-slide-left-and-fade
+              data-[side=bottom]:animate-slide-up-and-fade
+              data-[side=left]:animate-slide-right-and-fade
+              dark:bg-neutral-800
+              dark:shadow-popover-dark-sm
+            `}
             sideOffset={5}
           >
             <div className="flex flex-col gap-2">
-              <p className="mb-2 text-base text-neutral-700 font-medium leading-5">Select Image</p>
+              <p className="mb-2 text-base text-neutral-700 dark:text-neutral-100 font-medium leading-5">
+                Select Image
+              </p>
               <div className="flex gap-2">
                 <fieldset className="flex items-center gap-4">
-                  <label className="text-sm text-violet-11" htmlFor="imageUrl">
+                  <label className="text-sm text-violet-11 dark:text-violet-4" htmlFor="imageUrl">
                     Image Url
                   </label>
                   <input
                     className={`
-                    w-full
-                    inline-flex
-                    justify-center
-                    align-center
-                    flex-1
-                    rounded
-                    py-0
-                    px-2.5
-                    text-sm
-                    leading-none
-                    text-violet-11
-                    h-6
-                    shadow-violet-7-sm
-                    hover:shadow-violet-8-sm
-                    focus-visible:outline-violet-11
-                  `}
+                      w-full
+                      inline-flex
+                      justify-center
+                      align-center
+                      flex-1
+                      rounded
+                      py-0
+                      px-2.5
+                      text-sm
+                      leading-none
+                      text-violet-11
+                      h-6
+                      shadow-violet-7-sm
+                      hover:shadow-violet-8-sm
+                      focus-visible:outline-violet-11
+                    `}
                     id="imageUrl"
                     onChange={handleOpenImageUrl}
                   />
                 </fieldset>
                 <button
-                  className="bg-violet-11 rounded text-sm inline-flex justify-center items-center px-2 py-1 text-white"
+                  className={`
+                    bg-violet-11
+                    rounded
+                    text-sm
+                    inline-flex
+                    justify-center
+                    items-center
+                    px-2
+                    py-1
+                    text-white
+                    hover:bg-violet-9
+                  `}
                   onClick={handleAddImageUrl}
                 >
                   Add
                 </button>
               </div>
-              <p className="text-neutral-600 text-sm">or</p>
+              <p className="text-neutral-600 text-sm dark:text-neutral-100">or</p>
               <ImageDropzone setImage={setImage}>Drop another image here</ImageDropzone>
             </div>
             <Popover.Close
               className={`
-              rounded-full
-              h-7
-              w-7
-              inline-flex
-              items-center
-              justify-center
-              text-violet-11
-              absolute
-              top-1
-              right-1 
-              hover:bg-violet-4
-              focus:shadow-violet-7-sm
-            `}
+                rounded-full
+                h-7
+                w-7
+                inline-flex
+                items-center
+                justify-center
+                text-violet-11
+                absolute
+                top-1
+                right-1
+                hover:bg-violet-4
+                focus:shadow-violet-7-sm
+                dark:text-violet-4
+                dark:hover:bg-violet-11
+              `}
               aria-label="Close"
             >
               <Cross2Icon />
             </Popover.Close>
-            <Popover.Arrow className="fill-white" />
+            <Popover.Arrow className="fill-white dark:fill-neutral-800" />
           </Popover.Content>
         </Popover.Portal>
       </Popover.Root>

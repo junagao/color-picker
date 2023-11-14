@@ -45,6 +45,7 @@ export const ImageDropzone = ({setImage, children}: DropzoneProps) => {
         border-gray-300
         text-neutral-600
         text-sm
+        dark:text-neutral-100
       `}
       onDragOver={handleDragOver}
       onDrop={handleDrop}
