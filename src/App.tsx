@@ -1,10 +1,12 @@
 import {MutableRefObject, useCallback, useEffect, useRef, useState} from 'react'
-import * as Toast from '@radix-ui/react-toast'
-import {ImageSelect} from './components/image-select'
+import {TrashIcon} from '@radix-ui/react-icons'
+import * as Tooltip from '@radix-ui/react-tooltip'
+import {ColorSwatches} from './components/color-swatches'
+import {IconButton} from './components/icon-button'
 import {ImageDropzone} from './components/image-dropzone'
 import {ImagePreview} from './components/image-preview'
+import {ImageSelect} from './components/image-select'
 import {Notification} from './components/notification'
-import {ColorSwatches} from './components/color-swatches'
 
 export type SelectedColorsProps = {
   isSelected: boolean
@@ -123,12 +125,52 @@ function App() {
     return () => clearTimeout(notificationTimerRef.current)
   }, [])
 
+  const handleClearPalette = () => {
+    setSelectedColors([])
+  }
+
   return (
-    <Toast.Provider>
-      <div className="min-w-screen-md mb-40">
+    <Tooltip.Provider>
+      <div className="min-w[75vw] mb-40 dark:bg-bg-gray-950">
         <div className="flex justify-between w-[75vw] gap-4">
           <ColorSwatches handleCopyColor={handleCopyColor} selectedColors={selectedColors} />
-          <ImageSelect setImage={setImage} />
+          <div className="flex gap-2">
+            {selectedColors.length ? (
+              <Tooltip.Root>
+                <Tooltip.Trigger asChild>
+                  <IconButton aria-label="Clear palette" onClick={handleClearPalette}>
+                    <TrashIcon />
+                  </IconButton>
+                </Tooltip.Trigger>
+                <Tooltip.Portal>
+                  <Tooltip.Content
+                    className={`
+                        rounded
+                        p-2
+                        bg-slate4
+                        text-sm
+                        text-slate12
+                        leading-none
+                        shadow-popover-sm
+                        select-none
+                        will-change-transform-opacity
+                        data-[side=top]:animate-slideDownAndFade
+                        data-[side=right]:animate-slideLeftAndFade
+                        data-[side=bottom]:animate-slideUpAndFade
+                        data-[side=left]:animate-slideRightAndFade
+                        dark:bg-white
+                        dark:text-slate4
+                      `}
+                    sideOffset={5}
+                  >
+                    Clear palette
+                    <Tooltip.Arrow className="fill-slate4 dark:fill-white" />
+                  </Tooltip.Content>
+                </Tooltip.Portal>
+              </Tooltip.Root>
+            ) : null}
+            <ImageSelect setImage={setImage} />
+          </div>
         </div>
         {image ? (
           <div>
@@ -142,7 +184,7 @@ function App() {
         )}
         <Notification isError={isError} message={notificationMsg} open={open} setOpen={setOpen} />
       </div>
-    </Toast.Provider>
+    </Tooltip.Provider>
   )
 }
 

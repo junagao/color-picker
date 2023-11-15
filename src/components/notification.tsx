@@ -10,7 +10,7 @@ type NotificationProps = {
 }
 
 export const Notification = ({isError, message, open, setOpen}: NotificationProps) => (
-  <>
+  <Toast.Provider>
     <Toast.Root
       className={`
         bg-neutral-50
@@ -19,9 +19,12 @@ export const Notification = ({isError, message, open, setOpen}: NotificationProp
         flex
         items-center
         justify-center
+        shadow-popover-sm
         data-[state=open]:animate-slideIn
         data-[state=closed]:animate-hide
         data-[state=end]:animate-swipeOut
+        data-[swipe=move]:translate-x-[var(--radix-toast-swipe-move-x)]
+        data-[swipe=cancel]:transition-[transform_200ms_ease-out]
       `}
       open={open}
       onOpenChange={setOpen}
@@ -44,9 +47,10 @@ export const Notification = ({isError, message, open, setOpen}: NotificationProp
         m-0
         p-6
         max-w-[100vw]
-        z-50
+        list-none
         outline-none
+        z-[2147483647]
       `}
     />
-  </>
+  </Toast.Provider>
 )

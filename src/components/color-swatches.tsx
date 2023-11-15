@@ -19,7 +19,6 @@ export const ColorSwatches = ({handleCopyColor, selectedColors}: ColorSwatchesPr
               : undefined,
           }}
           onClick={() => handleCopyColor(rgb)}
-          // onClick={() => handleDisplayDetails(color.hex, color.rgb, color.hsl)}
         />
       ))}
     </div>

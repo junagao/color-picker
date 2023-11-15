@@ -1,34 +1,30 @@
+import {slateDark, whiteA} from '@radix-ui/colors'
+
 /** @type {import('tailwindcss').Config} */
 export default {
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   theme: {
     extend: {
       colors: {
-        'violet-3': '#f4f0fe',
-        'violet-4': '#ebe4ff',
-        'violet-8': '#aa99ec',
-        'violet-9': '#6e56cf',
-        'violet-11': '#6550b9',
+        ...slateDark,
+        ...whiteA,
       },
       boxShadow: {
-        'popover-sm': 'hsl(206 22% 7% / 35%) 0px 10px 38px -10px, hsl(206 22% 7% / 20%) 0px 10px 20px -15px',
-        'popover-dark-sm': 'hsl(10 10% 90% / 10%) 0px 0px 48px 0px, hsl(10 10% 90% / 5%) 0px 0px 30px -15px',
-        'popover-md':
-          'hsl(206 22% 7% / 35%) 0px 10px 38px -10px, hsl(206 22% 7% / 20%) 0px 10px 20px -15px, 0 0 0 2px var(--violet-7)',
-        'black-sm': '0 0 0 2px black',
-        'black-md': '0 2px 10px rgba(0, 0, 0, 0.5)',
-        'violet-4-sm': '0 0 0 1px #33255b',
-        'violet-7-sm': '0 0 0 1px #c2b5f5',
-        'violet-8-sm': '0 0 0 2px #aa99ec',
+        'popover-sm': 'hsl(206 22% 7% / 35%) 0px 0px 25px -10px, hsl(206 22% 7% / 20%) 0px 5px 20px -15px',
+        'popover-dark-sm': 'hsl(10 10% 90% / 10%) 0px -5px 25px -10px, hsl(10 10% 90% / 5%) 10px 15px 20px -15px',
+        'slate-4': '0 0 0 1px #272a2d',
+        'slate-4-md': '0 0 0 2px #272a2d',
+        'slate-11': '0 0 0 1px #60646c',
+        'slate-11-md': '0 0 0 2px #60646c',
       },
       minWidth: {
         'screen-md': '75vw',
       },
       animation: {
-        'slide-up-and-fade': 'slideUpAndFade 400ms cubic-bezier(0.16, 1, 0.3, 1)',
-        'slide-right-and-fade': 'slideRightAndFade 400ms cubic-bezier(0.16, 1, 0.3, 1)',
-        'slide-down-and-fade': 'slideDownAndFade 400ms cubic-bezier(0.16, 1, 0.3, 1)',
-        'slide-left-and-fade': 'slideLeftAndFade 400ms cubic-bezier(0.16, 1, 0.3, 1)',
+        slideUpAndFade: 'slideUpAndFade 400ms cubic-bezier(0.16, 1, 0.3, 1)',
+        slideRightAndFade: 'slideRightAndFade 400ms cubic-bezier(0.16, 1, 0.3, 1)',
+        slideDownAndFade: 'slideDownAndFade 400ms cubic-bezier(0.16, 1, 0.3, 1)',
+        slideLeftAndFade: 'slideLeftAndFade 400ms cubic-bezier(0.16, 1, 0.3, 1)',
         hide: 'hide 100ms ease-in',
         slideIn: 'slideIn 150ms cubic-bezier(0.16, 1, 0.3, 1)',
         swipeOut: 'swipeOut 100ms ease-out',
@@ -55,12 +51,12 @@ export default {
           to: {opacity: 0},
         },
         slideIn: {
-          from: {transform: 'translateX(calc(100% + 24px))'},
+          from: {transform: 'translateX(calc(100% + var(--viewport-padding)))'},
           to: {transform: 'translateX(0)'},
         },
         swipeOut: {
           from: {transform: 'translateX(var(--radix-toast-swipe-end-x))'},
-          to: {transfrom: 'translateX(calc(100% + 24px))'},
+          to: {transform: 'translateX(calc(100% + var(--viewport-padding)))'},
         },
       },
       willChange: {
