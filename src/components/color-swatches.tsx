@@ -4,10 +4,11 @@ import {SelectedColor, SelectedColors} from '../App'
 
 type ColorSwatchesProps = {
   handleCopyColor: (color: string) => void
+  handleRemoveColor: (rgb: string) => void
   selectedColors: SelectedColors
 }
 
-export const ColorSwatches = ({handleCopyColor, selectedColors}: ColorSwatchesProps) => (
+export const ColorSwatches = ({handleCopyColor, handleRemoveColor, selectedColors}: ColorSwatchesProps) => (
   <div className="flex items-center">
     <div className="flex flex-wrap gap-2">
       {selectedColors.map(({cmyk, hex, hsb, hsl, rgb, isSelected}) => (
@@ -15,6 +16,7 @@ export const ColorSwatches = ({handleCopyColor, selectedColors}: ColorSwatchesPr
           key={hex}
           cmyk={cmyk}
           handleCopyColor={handleCopyColor}
+          handleRemoveColor={handleRemoveColor}
           hex={hex}
           hsb={hsb}
           hsl={hsl}
@@ -28,9 +30,10 @@ export const ColorSwatches = ({handleCopyColor, selectedColors}: ColorSwatchesPr
 
 type ColorSwatchProps = {
   handleCopyColor: (color: string) => void
+  handleRemoveColor: (rgb: string) => void
 } & SelectedColor
 
-const ColorSwatch = ({handleCopyColor, rgb, hex, hsb, hsl, cmyk, isSelected}: ColorSwatchProps) => (
+const ColorSwatch = ({cmyk, handleCopyColor, handleRemoveColor, hex, hsb, hsl, isSelected, rgb}: ColorSwatchProps) => (
   <HoverCard.Root>
     <HoverCard.Trigger asChild>
       <div
@@ -60,13 +63,20 @@ const ColorSwatch = ({handleCopyColor, rgb, hex, hsb, hsl, cmyk, isSelected}: Co
         `}
         sideOffset={5}
       >
-        <div className="flex flex-col gap-2">
+        <div className="grid grid-cols-[40px_minmax(100px,_1fr)_15px] gap-2 grid-flow-row">
           <ColorDetails color={rgb} handleCopyColor={handleCopyColor} />
           <ColorDetails color={hex} handleCopyColor={handleCopyColor} />
           <ColorDetails color={hsb} handleCopyColor={handleCopyColor} />
           <ColorDetails color={hsl} handleCopyColor={handleCopyColor} />
           <ColorDetails color={cmyk} handleCopyColor={handleCopyColor} />
         </div>
+        <button
+          type="button"
+          onClick={() => handleRemoveColor(rgb)}
+          className="text-slate4 text-xs border border-slate10 rounded mt-4 px-2 hover:bg-slate12"
+        >
+          Remove color
+        </button>
         <HoverCard.Arrow className="fill-white" />
       </HoverCard.Content>
     </HoverCard.Portal>
@@ -79,7 +89,7 @@ type ColorDetailsProps = {
 }
 
 const ColorDetails = ({color, handleCopyColor}: ColorDetailsProps) => (
-  <div className="flex gap-2">
+  <>
     <div className="text-sm text-slate1 font-bold">
       {(color.startsWith('#') && 'hex') ||
         (color.startsWith('rgb') && 'rgb') ||
@@ -89,8 +99,8 @@ const ColorDetails = ({color, handleCopyColor}: ColorDetailsProps) => (
       :
     </div>
     <div className="text-sm text-slate1">{color}</div>
-    <button className="text-slate1" type="button" onClick={() => handleCopyColor(color)}>
+    <button className="text-slate9 hover:text-slate1" type="button" onClick={() => handleCopyColor(color)}>
       <CopyIcon />
     </button>
-  </div>
+  </>
 )

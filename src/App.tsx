@@ -143,11 +143,19 @@ function App() {
     setSelectedColors([])
   }
 
+  const handleRemoveColor = useCallback((rgb: string) => {
+    setSelectedColors(oldColors => oldColors.filter(color => color.rgb !== rgb))
+  }, [])
+
   return (
     <Tooltip.Provider>
       <div className="min-w-[75vw] mb-40 dark:bg-bg-gray-950">
         <div className="flex justify-between w-[75vw] gap-4">
-          <ColorSwatches handleCopyColor={handleCopyColor} selectedColors={selectedColors} />
+          <ColorSwatches
+            handleCopyColor={handleCopyColor}
+            handleRemoveColor={handleRemoveColor}
+            selectedColors={selectedColors}
+          />
           <div className="flex gap-2">
             {selectedColors.length ? (
               <Tooltip.Root>
