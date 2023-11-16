@@ -7,16 +7,27 @@ import {ImageDropzone} from './components/image-dropzone'
 import {ImagePreview} from './components/image-preview'
 import {ImageSelect} from './components/image-select'
 import {Notification} from './components/notification'
+import {rgbToHex, rgbToHsb, rgbToHsl, rgbToCmyk} from './utils'
 
-export type SelectedColorsProps = {
+export type SelectedColor = {
   isSelected: boolean
+  cmyk: string
+  hex: string
+  hsb: string
+  hsl: string
   rgb: string
-}[]
+}
+
+export type SelectedColors = SelectedColor[]
 
 function App() {
   const [image, setImage] = useState<string>('')
+  const [cmyk, setCmyk] = useState<string>('')
+  const [hex, setHex] = useState<string>('')
+  const [hsb, setHsb] = useState<string>('')
+  const [hsl, setHsl] = useState<string>('')
   const [rgb, setRgb] = useState<string>('')
-  const [selectedColors, setSelectedColors] = useState<SelectedColorsProps>([])
+  const [selectedColors, setSelectedColors] = useState<SelectedColors>([])
   const [notificationMsg, setNotificationMsg] = useState<string>('')
   const [open, setOpen] = useState<boolean>(false)
   const [isError, setIsError] = useState<boolean>(false)
@@ -75,11 +86,15 @@ function App() {
         data = pixel && pixel.data
       }
       if (data && circle) {
-        const r = data[0].toString()
-        const g = data[1].toString()
-        const b = data[2].toString()
+        const r = data[0]
+        const g = data[1]
+        const b = data[2]
         const rgb = `rgb(${r}, ${g}, ${b})`
         setRgb(rgb)
+        setHex(rgbToHex(r, g, b))
+        setHsl(rgbToHsl(r, g, b))
+        setHsb(rgbToHsb(r, g, b))
+        setCmyk(rgbToCmyk(r, g, b))
         circle.style.display = 'block'
         circle.style.left = e.pageX + 'px'
         circle.style.top = e.pageY + 'px'
@@ -97,9 +112,8 @@ function App() {
       }
       if (!isColorAlreadySelected) {
         setIsError(false)
-        const oldSelectedColors: SelectedColorsProps = selectedColors.map(color => ({...color, isSelected: false}))
-        setSelectedColors([...oldSelectedColors, {rgb, isSelected: true}])
-        setRgb(rgb)
+        const oldSelectedColors: SelectedColors = selectedColors.map(color => ({...color, isSelected: false}))
+        setSelectedColors([...oldSelectedColors, {rgb, hex, hsb, hsl, cmyk, isSelected: true}])
       }
     }
 
@@ -119,7 +133,7 @@ function App() {
       canvas?.removeEventListener('click', handleSelectColor)
       canvas?.removeEventListener('mouseleave', handleClearColor)
     }
-  }, [handleCopyColor, handleShowNotification, image, rgb, selectedColors])
+  }, [cmyk, handleCopyColor, handleShowNotification, hex, hsb, hsl, image, rgb, selectedColors])
 
   useEffect(() => {
     return () => clearTimeout(notificationTimerRef.current)
@@ -131,7 +145,7 @@ function App() {
 
   return (
     <Tooltip.Provider>
-      <div className="min-w[75vw] mb-40 dark:bg-bg-gray-950">
+      <div className="min-w-[75vw] mb-40 dark:bg-bg-gray-950">
         <div className="flex justify-between w-[75vw] gap-4">
           <ColorSwatches handleCopyColor={handleCopyColor} selectedColors={selectedColors} />
           <div className="flex gap-2">

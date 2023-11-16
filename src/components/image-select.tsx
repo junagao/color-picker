@@ -121,6 +121,7 @@ export const ImageSelect = ({setImage}: ImageSelectProps) => {
                         dark:bg-whiteA3
                         dark:hover:bg-whiteA2
                       `}
+                    type="button"
                     onClick={handleAddImageUrl}
                   >
                     Add

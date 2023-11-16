@@ -17,9 +17,6 @@ export default {
         'slate-11': '0 0 0 1px #60646c',
         'slate-11-md': '0 0 0 2px #60646c',
       },
-      minWidth: {
-        'screen-md': '75vw',
-      },
       animation: {
         slideUpAndFade: 'slideUpAndFade 400ms cubic-bezier(0.16, 1, 0.3, 1)',
         slideRightAndFade: 'slideRightAndFade 400ms cubic-bezier(0.16, 1, 0.3, 1)',

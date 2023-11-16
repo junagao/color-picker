@@ -29,6 +29,7 @@ export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(
         dark:focus:shadow-slate-11-md
         dark:focus-visible:outline-slate11
       `}
+      type="button"
       ref={forwardedRef}
       onClick={onClick}
     >
