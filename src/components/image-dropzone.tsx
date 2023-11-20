@@ -2,21 +2,18 @@ import {Dispatch, SetStateAction, useRef, ReactNode, RefObject} from 'react'
 
 type DropzoneProps = {
   children: ReactNode
+  setIsImageSelectOpen?: Dispatch<SetStateAction<boolean>>
   setImage: Dispatch<SetStateAction<string>>
 }
 
-export const ImageDropzone = ({setImage, children}: DropzoneProps) => {
+export const ImageDropzone = ({children, setImage, setIsImageSelectOpen}: DropzoneProps) => {
   const inputFileRef: RefObject<HTMLInputElement> = useRef<HTMLInputElement>(null)
 
   const handleDragOver = (e: {preventDefault: () => void}) => {
     e.preventDefault()
   }
 
-  const handleDrop = (e: {
-    preventDefault: () => void
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    dataTransfer: {files: any}
-  }) => {
+  const handleDrop = (e: {preventDefault: () => void; dataTransfer: DataTransfer}) => {
     e.preventDefault()
     const files = e.dataTransfer.files
     const fileReader: FileReader = new FileReader()
@@ -24,6 +21,9 @@ export const ImageDropzone = ({setImage, children}: DropzoneProps) => {
     fileReader.onloadend = readEvent => {
       const targetResultUrl: string | undefined = readEvent.target?.result?.toString()
       if (targetResultUrl) setImage(targetResultUrl)
+    }
+    if (setIsImageSelectOpen) {
+      setIsImageSelectOpen(false)
     }
   }
 

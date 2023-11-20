@@ -11,6 +11,7 @@ type ImageSelectProps = {
 
 export const ImageSelect = ({setImage}: ImageSelectProps) => {
   const [imageUrl, setImageUrl] = useState<string>('')
+  const [isImageSelectOpen, setIsImageSelectOpen] = useState(false)
 
   const handleOpenImageUrl = (e: {target: {value: SetStateAction<string>}}) => {
     setImageUrl(e.target.value)
@@ -19,11 +20,12 @@ export const ImageSelect = ({setImage}: ImageSelectProps) => {
   const handleAddImageUrl = (e: {preventDefault: () => void}) => {
     e.preventDefault()
     setImage(imageUrl)
+    setIsImageSelectOpen(false)
   }
 
   return (
     <div className="flex justify-end">
-      <Popover.Root>
+      <Popover.Root open={isImageSelectOpen} onOpenChange={setIsImageSelectOpen}>
         <Tooltip.Root>
           <Popover.Trigger asChild>
             <Tooltip.Trigger asChild>
@@ -35,22 +37,22 @@ export const ImageSelect = ({setImage}: ImageSelectProps) => {
           <Tooltip.Portal>
             <Tooltip.Content
               className={`
-                  rounded
-                  p-2
-                  bg-slate4
-                  text-sm
-                  text-slate12
-                  leading-none
-                  shadow-popover-sm
-                  select-none
-                  will-change-transform-opacity
-                  data-[side=top]:animate-slideDownAndFade
-                  data-[side=right]:animate-slideLeftAndFade
-                  data-[side=bottom]:animate-slideUpAndFade
-                  data-[side=left]:animate-slideRightAndFade
-                  dark:bg-white
-                  dark:text-slate4
-                `}
+                rounded
+                p-2
+                bg-slate4
+                text-sm
+                text-slate12
+                leading-none
+                shadow-popover-sm
+                select-none
+                will-change-transform-opacity
+                data-[side=top]:animate-slideDownAndFade
+                data-[side=right]:animate-slideLeftAndFade
+                data-[side=bottom]:animate-slideUpAndFade
+                data-[side=left]:animate-slideRightAndFade
+                dark:bg-white
+                dark:text-slate4
+              `}
               sideOffset={5}
             >
               Select image
@@ -60,19 +62,19 @@ export const ImageSelect = ({setImage}: ImageSelectProps) => {
           <Popover.Portal>
             <Popover.Content
               className={`
-                  rounded
-                  p-5
-                  w-80
-                  bg-white
-                  shadow-popover-sm
-                  will-change-transform-opacity
-                  data-[side=top]:animate-slideDownAndFade
-                  data-[side=right]:animate-slideLeftAndFade
-                  data-[side=bottom]:animate-slideUpAndFade
-                  data-[side=left]:animate-slideRightAndFade
-                  dark:bg-slate1
-                  dark:shadow-popover-dark-sm
-                `}
+                rounded
+                p-5
+                w-80
+                bg-white
+                shadow-popover-sm
+                will-change-transform-opacity
+                data-[side=top]:animate-slideDownAndFade
+                data-[side=right]:animate-slideLeftAndFade
+                data-[side=bottom]:animate-slideUpAndFade
+                data-[side=left]:animate-slideRightAndFade
+                dark:bg-slate1
+                dark:shadow-popover-dark-sm
+              `}
               sideOffset={5}
             >
               <div className="flex flex-col gap-2">
@@ -84,43 +86,43 @@ export const ImageSelect = ({setImage}: ImageSelectProps) => {
                     </label>
                     <input
                       className={`
-                          w-full
-                          inline-flex
-                          justify-center
-                          align-center
-                          flex-1
-                          rounded
-                          py-0
-                          px-2.5
-                          text-sm
-                          leading-none
-                          text-slate4
-                          h-6
-                          shadow-slate-4
-                          focus-visible:outline-slate11
-                          dark:text-slate12
-                          dark:shadow-slate-11
-                          dark:focus-visible:outline-whiteA3
-                          `}
+                        w-full
+                        inline-flex
+                        justify-center
+                        align-center
+                        flex-1
+                        rounded
+                        py-0
+                        px-2.5
+                        text-sm
+                        leading-none
+                        text-slate4
+                        h-6
+                        shadow-slate-4
+                        focus-visible:outline-slate11
+                        dark:text-slate12
+                        dark:shadow-slate-11
+                        dark:focus-visible:outline-whiteA3
+                        `}
                       id="imageUrl"
                       onChange={handleOpenImageUrl}
                     />
                   </fieldset>
                   <button
                     className={`
-                        bg-slate1
-                        rounded
-                        text-sm
-                        inline-flex
-                        justify-center
-                        items-center
-                        px-2
-                        py-1
-                        text-white
-                        hover:bg-slate4
-                        dark:bg-whiteA3
-                        dark:hover:bg-whiteA2
-                      `}
+                      bg-slate1
+                      rounded
+                      text-sm
+                      inline-flex
+                      justify-center
+                      items-center
+                      px-2
+                      py-1
+                      text-white
+                      hover:bg-slate4
+                      dark:bg-whiteA3
+                      dark:hover:bg-whiteA2
+                    `}
                     type="button"
                     onClick={handleAddImageUrl}
                   >
@@ -128,27 +130,29 @@ export const ImageSelect = ({setImage}: ImageSelectProps) => {
                   </button>
                 </div>
                 <p className="text-slate4 text-sm dark:text-slate11">or</p>
-                <ImageDropzone setImage={setImage}>Drop another image here</ImageDropzone>
+                <ImageDropzone setImage={setImage} setIsImageSelectOpen={setIsImageSelectOpen}>
+                  Drop another image here
+                </ImageDropzone>
               </div>
               <Popover.Close
                 className={`
-                    rounded-full
-                    h-7
-                    w-7
-                    inline-flex
-                    items-center
-                    justify-center
-                    text-slate4
-                    absolute
-                    top-1
-                    right-1
-                    hover:bg-slate12
-                    focus:shadow-slate-11-sm
-                    focus-visible:outline-slate4
-                    dark:text-slate12
-                    dark:hover:bg-slate4
-                    dark:focus-visible:outline-slate11
-                  `}
+                  rounded-full
+                  h-7
+                  w-7
+                  inline-flex
+                  items-center
+                  justify-center
+                  text-slate4
+                  absolute
+                  top-1
+                  right-1
+                  hover:bg-slate12
+                  focus:shadow-slate-11-sm
+                  focus-visible:outline-slate4
+                  dark:text-slate12
+                  dark:hover:bg-slate4
+                  dark:focus-visible:outline-slate11
+                `}
                 aria-label="Close"
               >
                 <Cross2Icon />

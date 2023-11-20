@@ -81,3 +81,17 @@ export const rgbToCmyk = (r: number, g: number, b: number): string => {
 
   return `cmyk(${c}, ${m}, ${y}, ${k})`
 }
+
+export const getHexNumberOnly = (hex: string) => hex.slice(1)
+
+export const getRgbHsbHslNumberOnly = (color: string) => color.slice(4, -1)
+
+export const getCmykNumberOnly = (cmyk: string) => cmyk.slice(5, -1)
+
+export const getRgbCmykPercentage = (color: string) => color.split(',').join('%,').split(')').join('%)')
+
+export const getHsbHslPercentage = (color: string) =>
+  color
+    .split(',')
+    .map((c, index) => (index == 0 && c) || (index === 1 && c + '%') || c.split(')').join('%)'))
+    .join(',')

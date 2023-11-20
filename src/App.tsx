@@ -8,8 +8,9 @@ import {ImagePreview} from './components/image-preview'
 import {ImageSelect} from './components/image-select'
 import {Notification} from './components/notification'
 import {rgbToHex, rgbToHsb, rgbToHsl, rgbToCmyk} from './utils'
+import {Settings} from './components/settings'
 
-export type SelectedColor = {
+export type Color = {
   isSelected: boolean
   cmyk: string
   hex: string
@@ -18,18 +19,25 @@ export type SelectedColor = {
   rgb: string
 }
 
-export type SelectedColors = SelectedColor[]
+export type Colors = Color[]
+
+export type ColorFormat =
+  | 'mode-with-numbers'
+  | 'only-numbers'
+  | 'mode-with-degrees-or-percentage'
+  | 'only-numbers-with-degrees-or-percentage'
 
 function App() {
   const [image, setImage] = useState<string>('')
+  const [format, setFormat] = useState<ColorFormat>('mode-with-numbers')
   const [cmyk, setCmyk] = useState<string>('')
   const [hex, setHex] = useState<string>('')
   const [hsb, setHsb] = useState<string>('')
   const [hsl, setHsl] = useState<string>('')
   const [rgb, setRgb] = useState<string>('')
-  const [selectedColors, setSelectedColors] = useState<SelectedColors>([])
+  const [colors, setColors] = useState<Colors>([])
   const [notificationMsg, setNotificationMsg] = useState<string>('')
-  const [open, setOpen] = useState<boolean>(false)
+  const [isNotificationOpen, setIsNotificationOpen] = useState<boolean>(false)
   const [isError, setIsError] = useState<boolean>(false)
 
   const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -56,10 +64,10 @@ function App() {
   }, [image])
 
   const handleShowNotification = useCallback(() => {
-    setOpen(false)
+    setIsNotificationOpen(false)
     window.clearTimeout(notificationTimerRef.current)
     notificationTimerRef.current = window.setTimeout(() => {
-      setOpen(true)
+      setIsNotificationOpen(true)
     }, 10)
   }, [])
 
@@ -79,7 +87,7 @@ function App() {
     const handleGetColor = (e: MouseEvent) => {
       const bounding: DOMRect | undefined = canvas?.getBoundingClientRect()
       let data: Uint8ClampedArray | undefined = undefined
-      if (bounding && circle) {
+      if (bounding) {
         const x = e.clientX - bounding.left
         const y = e.clientY - bounding.top
         const pixel = canvas?.getContext('2d', {willReadFrequently: true})?.getImageData(x, y, 1, 1)
@@ -104,7 +112,7 @@ function App() {
 
     const handleSelectColor = () => {
       handleCopyColor(rgb)
-      const isColorAlreadySelected: boolean = selectedColors.some(c => c.rgb === rgb)
+      const isColorAlreadySelected: boolean = colors.some(c => c.rgb === rgb)
       if (isColorAlreadySelected) {
         setNotificationMsg(`Color already selected! ${rgb} copied to clipboard`)
         setIsError(true)
@@ -112,8 +120,10 @@ function App() {
       }
       if (!isColorAlreadySelected) {
         setIsError(false)
-        const oldSelectedColors: SelectedColors = selectedColors.map(color => ({...color, isSelected: false}))
-        setSelectedColors([...oldSelectedColors, {rgb, hex, hsb, hsl, cmyk, isSelected: true}])
+        setColors(prevColors => [
+          ...prevColors.map(color => ({...color, isSelected: false})),
+          {rgb, hex, hsb, hsl, cmyk, isSelected: true},
+        ])
       }
     }
 
@@ -133,18 +143,18 @@ function App() {
       canvas?.removeEventListener('click', handleSelectColor)
       canvas?.removeEventListener('mouseleave', handleClearColor)
     }
-  }, [cmyk, handleCopyColor, handleShowNotification, hex, hsb, hsl, image, rgb, selectedColors])
+  }, [cmyk, colors, handleCopyColor, handleShowNotification, hex, hsb, hsl, image, rgb])
 
   useEffect(() => {
     return () => clearTimeout(notificationTimerRef.current)
   }, [])
 
   const handleClearPalette = () => {
-    setSelectedColors([])
+    setColors([])
   }
 
   const handleRemoveColor = useCallback((rgb: string) => {
-    setSelectedColors(oldColors => oldColors.filter(color => color.rgb !== rgb))
+    setColors(prevColors => prevColors.filter(color => color.rgb !== rgb))
   }, [])
 
   return (
@@ -152,12 +162,13 @@ function App() {
       <div className="min-w-[75vw] mb-40 dark:bg-bg-gray-950">
         <div className="flex justify-between w-[75vw] gap-4">
           <ColorSwatches
+            colors={colors}
+            format={format}
             handleCopyColor={handleCopyColor}
             handleRemoveColor={handleRemoveColor}
-            selectedColors={selectedColors}
           />
           <div className="flex gap-2">
-            {selectedColors.length ? (
+            {colors.length ? (
               <Tooltip.Root>
                 <Tooltip.Trigger asChild>
                   <IconButton aria-label="Clear palette" onClick={handleClearPalette}>
@@ -167,22 +178,22 @@ function App() {
                 <Tooltip.Portal>
                   <Tooltip.Content
                     className={`
-                        rounded
-                        p-2
-                        bg-slate4
-                        text-sm
-                        text-slate12
-                        leading-none
-                        shadow-popover-sm
-                        select-none
-                        will-change-transform-opacity
-                        data-[side=top]:animate-slideDownAndFade
-                        data-[side=right]:animate-slideLeftAndFade
-                        data-[side=bottom]:animate-slideUpAndFade
-                        data-[side=left]:animate-slideRightAndFade
-                        dark:bg-white
-                        dark:text-slate4
-                      `}
+                      rounded
+                      p-2
+                      bg-slate4
+                      text-sm
+                      text-slate12
+                      leading-none
+                      shadow-popover-sm
+                      select-none
+                      will-change-transform-opacity
+                      data-[side=top]:animate-slideDownAndFade
+                      data-[side=right]:animate-slideLeftAndFade
+                      data-[side=bottom]:animate-slideUpAndFade
+                      data-[side=left]:animate-slideRightAndFade
+                      dark:bg-white
+                      dark:text-slate4
+                    `}
                     sideOffset={5}
                   >
                     Clear palette
@@ -192,6 +203,7 @@ function App() {
               </Tooltip.Root>
             ) : null}
             <ImageSelect setImage={setImage} />
+            <Settings format={format} setFormat={setFormat} />
           </div>
         </div>
         {image ? (
@@ -204,7 +216,12 @@ function App() {
             <ImageDropzone setImage={setImage}>Drop image here</ImageDropzone>
           </div>
         )}
-        <Notification isError={isError} message={notificationMsg} open={open} setOpen={setOpen} />
+        <Notification
+          isError={isError}
+          message={notificationMsg}
+          open={isNotificationOpen}
+          setOpen={setIsNotificationOpen}
+        />
       </div>
     </Tooltip.Provider>
   )
