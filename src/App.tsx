@@ -1,5 +1,5 @@
 import {MutableRefObject, useCallback, useEffect, useRef, useState} from 'react'
-import {TrashIcon} from '@radix-ui/react-icons'
+import {CopyIcon, TrashIcon} from '@radix-ui/react-icons'
 import * as Tooltip from '@radix-ui/react-tooltip'
 import {ColorSwatches} from './components/color-swatches'
 import {IconButton} from './components/icon-button'
@@ -7,7 +7,17 @@ import {ImageDropzone} from './components/image-dropzone'
 import {ImagePreview} from './components/image-preview'
 import {ImageSelect} from './components/image-select'
 import {Notification} from './components/notification'
-import {rgbToHex, rgbToHsb, rgbToHsl, rgbToCmyk} from './utils'
+import {
+  rgbToHex,
+  rgbToHsb,
+  rgbToHsl,
+  rgbToCmyk,
+  getFinalRgb,
+  getFinalHex,
+  getFinalHsb,
+  getFinalHsl,
+  getFinalCmyk,
+} from './utils'
 import {Settings} from './components/settings'
 
 export type Color = {
@@ -27,9 +37,12 @@ export type ColorFormat =
   | 'mode-with-degrees-or-percentage'
   | 'only-numbers-with-degrees-or-percentage'
 
+export type ColorMode = 'hex' | 'rgb' | 'cmyk' | 'hsb' | 'hsl'
+
 function App() {
   const [image, setImage] = useState<string>('')
   const [format, setFormat] = useState<ColorFormat>('mode-with-numbers')
+  const [paletteMode, setPaletteMode] = useState<ColorMode>('rgb')
   const [cmyk, setCmyk] = useState<string>('')
   const [hex, setHex] = useState<string>('')
   const [hsb, setHsb] = useState<string>('')
@@ -153,6 +166,20 @@ function App() {
     setColors([])
   }
 
+  const handleCopyPalette = async () => {
+    setNotificationMsg(`Color palette copied to clipboard!`)
+    handleShowNotification()
+    const colorArray = colors.map(
+      color =>
+        (paletteMode === 'rgb' && getFinalRgb(format, color.rgb)) ||
+        (paletteMode === 'hex' && getFinalHex(format, color.hex)) ||
+        (paletteMode === 'hsb' && getFinalHsb(format, color.hsb)) ||
+        (paletteMode === 'hsl' && getFinalHsl(format, color.hsl)) ||
+        (paletteMode === 'cmyk' && getFinalCmyk(format, color.cmyk)),
+    )
+    await navigator.clipboard.writeText(JSON.stringify(colorArray))
+  }
+
   const handleRemoveColor = useCallback((rgb: string) => {
     setColors(prevColors => prevColors.filter(color => color.rgb !== rgb))
   }, [])
@@ -169,15 +196,48 @@ function App() {
           />
           <div className="flex gap-2">
             {colors.length ? (
-              <Tooltip.Root>
-                <Tooltip.Trigger asChild>
-                  <IconButton aria-label="Clear palette" onClick={handleClearPalette}>
-                    <TrashIcon />
-                  </IconButton>
-                </Tooltip.Trigger>
-                <Tooltip.Portal>
-                  <Tooltip.Content
-                    className={`
+              <>
+                <Tooltip.Root>
+                  <Tooltip.Trigger asChild>
+                    <IconButton aria-label="Copy palette" onClick={handleCopyPalette}>
+                      <CopyIcon />
+                    </IconButton>
+                  </Tooltip.Trigger>
+                  <Tooltip.Portal>
+                    <Tooltip.Content
+                      className={`
+                        rounded
+                        p-2
+                        bg-slate4
+                        text-sm
+                        text-slate12
+                        leading-none
+                        shadow-popover-sm
+                        select-none
+                        will-change-transform-opacity
+                        data-[side=top]:animate-slideDownAndFade
+                        data-[side=right]:animate-slideLeftAndFade
+                        data-[side=bottom]:animate-slideUpAndFade
+                        data-[side=left]:animate-slideRightAndFade
+                        dark:bg-white
+                        dark:text-slate4
+                      `}
+                      sideOffset={5}
+                    >
+                      Copy palette
+                      <Tooltip.Arrow className="fill-slate4 dark:fill-white" />
+                    </Tooltip.Content>
+                  </Tooltip.Portal>
+                </Tooltip.Root>
+                <Tooltip.Root>
+                  <Tooltip.Trigger asChild>
+                    <IconButton aria-label="Clear palette" onClick={handleClearPalette}>
+                      <TrashIcon />
+                    </IconButton>
+                  </Tooltip.Trigger>
+                  <Tooltip.Portal>
+                    <Tooltip.Content
+                      className={`
                       rounded
                       p-2
                       bg-slate4
@@ -194,16 +254,17 @@ function App() {
                       dark:bg-white
                       dark:text-slate4
                     `}
-                    sideOffset={5}
-                  >
-                    Clear palette
-                    <Tooltip.Arrow className="fill-slate4 dark:fill-white" />
-                  </Tooltip.Content>
-                </Tooltip.Portal>
-              </Tooltip.Root>
+                      sideOffset={5}
+                    >
+                      Clear palette
+                      <Tooltip.Arrow className="fill-slate4 dark:fill-white" />
+                    </Tooltip.Content>
+                  </Tooltip.Portal>
+                </Tooltip.Root>
+              </>
             ) : null}
             <ImageSelect setImage={setImage} />
-            <Settings format={format} setFormat={setFormat} />
+            <Settings format={format} paletteMode={paletteMode} setFormat={setFormat} setPaletteMode={setPaletteMode} />
           </div>
         </div>
         {image ? (

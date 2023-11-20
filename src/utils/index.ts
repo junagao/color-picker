@@ -1,3 +1,5 @@
+import {ColorFormat} from '../App'
+
 export const rgbToHex = (r: number, g: number, b: number) =>
   '#' + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)
 
@@ -82,16 +84,43 @@ export const rgbToCmyk = (r: number, g: number, b: number): string => {
   return `cmyk(${c}, ${m}, ${y}, ${k})`
 }
 
-export const getHexNumberOnly = (hex: string) => hex.slice(1)
+const getHexNumberOnly = (hex: string) => hex.slice(1)
 
-export const getRgbHsbHslNumberOnly = (color: string) => color.slice(4, -1)
+const getRgbHsbHslNumberOnly = (color: string) => color.slice(4, -1)
 
-export const getCmykNumberOnly = (cmyk: string) => cmyk.slice(5, -1)
+const getCmykNumberOnly = (cmyk: string) => cmyk.slice(5, -1)
 
-export const getRgbCmykPercentage = (color: string) => color.split(',').join('%,').split(')').join('%)')
+const getRgbCmykPercentage = (color: string) => color.split(',').join('%,').split(')').join('%)')
 
-export const getHsbHslPercentage = (color: string) =>
+const getHsbHslPercentage = (color: string) =>
   color
     .split(',')
     .map((c, index) => (index == 0 && c) || (index === 1 && c + '%') || c.split(')').join('%)'))
     .join(',')
+
+export const getFinalRgb = (format: ColorFormat, rgb: string) =>
+  (format === 'mode-with-numbers' && rgb) ||
+  (format === 'only-numbers' && getRgbHsbHslNumberOnly(rgb)) ||
+  (format === 'mode-with-degrees-or-percentage' && getRgbCmykPercentage(rgb)) ||
+  getRgbHsbHslNumberOnly(getRgbCmykPercentage(rgb))
+
+export const getFinalHex = (format: ColorFormat, hex: string) =>
+  ((format === 'only-numbers' || format === 'only-numbers-with-degrees-or-percentage') && getHexNumberOnly(hex)) || hex
+
+export const getFinalHsb = (format: ColorFormat, hsb: string) =>
+  (format === 'mode-with-numbers' && hsb) ||
+  (format === 'only-numbers' && getRgbHsbHslNumberOnly(hsb)) ||
+  (format === 'mode-with-degrees-or-percentage' && getHsbHslPercentage(hsb)) ||
+  getRgbHsbHslNumberOnly(getHsbHslPercentage(hsb))
+
+export const getFinalHsl = (format: ColorFormat, hsl: string) =>
+  (format === 'mode-with-numbers' && hsl) ||
+  (format === 'only-numbers' && getRgbHsbHslNumberOnly(hsl)) ||
+  (format === 'mode-with-degrees-or-percentage' && getHsbHslPercentage(hsl)) ||
+  getRgbHsbHslNumberOnly(getHsbHslPercentage(hsl))
+
+export const getFinalCmyk = (format: ColorFormat, cmyk: string) =>
+  (format === 'mode-with-numbers' && cmyk) ||
+  (format === 'only-numbers' && getCmykNumberOnly(cmyk)) ||
+  (format === 'mode-with-degrees-or-percentage' && getRgbCmykPercentage(cmyk)) ||
+  getCmykNumberOnly(getRgbCmykPercentage(cmyk))

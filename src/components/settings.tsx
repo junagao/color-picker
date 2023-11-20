@@ -4,14 +4,16 @@ import * as Popover from '@radix-ui/react-popover'
 import * as RadioGroup from '@radix-ui/react-radio-group'
 import * as Tooltip from '@radix-ui/react-tooltip'
 import {IconButton} from './icon-button'
-import {ColorFormat} from '../App'
+import {ColorFormat, ColorMode} from '../App'
 
 type SettingsProps = {
   format: ColorFormat
+  paletteMode: ColorMode
   setFormat: Dispatch<SetStateAction<ColorFormat>>
+  setPaletteMode: Dispatch<SetStateAction<ColorMode>>
 }
 
-export const Settings = ({format, setFormat}: SettingsProps) => (
+export const Settings = ({format, paletteMode, setFormat, setPaletteMode}: SettingsProps) => (
   <Popover.Root>
     <Tooltip.Root>
       <Popover.Trigger asChild>
@@ -76,10 +78,10 @@ export const Settings = ({format, setFormat}: SettingsProps) => (
                   e === 'only-numbers-with-degrees-or-percentage') &&
                 setFormat(e)
               }
-              aria-label="View density"
+              aria-label="Format"
             >
               <fieldset>
-                <legend className="text-sm font-medium text-slate9 mb-1 dark:text-slate11">Preferred format:</legend>
+                <legend className="text-sm font-medium text-slate9 mb-1 dark:text-slate11">Format:</legend>
                 <RadioItem id="mode-with-numbers" example="rgb(100, 50, 60)">
                   Color mode with numbers
                 </RadioItem>
@@ -92,6 +94,23 @@ export const Settings = ({format, setFormat}: SettingsProps) => (
                 <RadioItem id="only-numbers-with-degrees-or-percentage" example="100%, 50%, 60%">
                   Only numbers with %
                 </RadioItem>
+              </fieldset>
+            </RadioGroup.Root>
+            <RadioGroup.Root
+              className="flex flex-col gap-2.5 mt-4"
+              value={paletteMode}
+              onValueChange={e =>
+                (e === 'cmyk' || e === 'hex' || e === 'hsb' || e === 'hsl' || e === 'rgb') && setPaletteMode(e)
+              }
+              aria-label="Color palette mode"
+            >
+              <fieldset>
+                <legend className="text-sm font-medium text-slate9 mb-1 dark:text-slate11">Color palette mode:</legend>
+                <RadioItem id="rgb">rgb</RadioItem>
+                <RadioItem id="hex">hex</RadioItem>
+                <RadioItem id="hsb">hsb</RadioItem>
+                <RadioItem id="hsl">hsl</RadioItem>
+                <RadioItem id="cmyk">cmyk</RadioItem>
               </fieldset>
             </RadioGroup.Root>
           </form>
@@ -127,7 +146,7 @@ export const Settings = ({format, setFormat}: SettingsProps) => (
 
 type RadioItemProps = {
   children: ReactNode
-  example: string
+  example?: string
   id: string
 }
 
@@ -173,7 +192,9 @@ const RadioItem = ({children, example, id}: RadioItemProps) => (
       />
     </RadioGroup.Item>
     <label className="text-sm text-slate4 leading-none pl-2 dark:text-slate11" htmlFor={id}>
-      {children}:<span className="text-sm font-bold ml-1">{example}</span>
+      {children}
+      {example && ':'}
+      <span className="text-sm font-bold ml-1">{example}</span>
     </label>
   </div>
 )
