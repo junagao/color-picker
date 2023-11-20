@@ -13,3 +13,7 @@ A simple tool to select colors from an image and copy colors to clipboard (singl
 - remove previously selected color
 - choose preferred format and color palette mode
 - supported color modes: rgb, hex, hsb, hsl, cmyk (more to come)
+
+## Demo
+
+https://color-picker.junagao.com/
