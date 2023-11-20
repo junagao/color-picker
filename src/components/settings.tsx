@@ -5,6 +5,7 @@ import * as RadioGroup from '@radix-ui/react-radio-group'
 import * as Tooltip from '@radix-ui/react-tooltip'
 import {IconButton} from './icon-button'
 import {ColorFormat, ColorMode} from '../App'
+import {TooltipButton} from './tooltip-button'
 
 type SettingsProps = {
   format: ColorFormat
@@ -16,38 +17,15 @@ type SettingsProps = {
 export const Settings = ({format, paletteMode, setFormat, setPaletteMode}: SettingsProps) => (
   <Popover.Root>
     <Tooltip.Root>
-      <Popover.Trigger asChild>
-        <Tooltip.Trigger asChild>
+      <TooltipButton
+        trigger={
           <IconButton aria-label="Settings">
             <MixerHorizontalIcon />
           </IconButton>
-        </Tooltip.Trigger>
-      </Popover.Trigger>
-      <Tooltip.Portal>
-        <Tooltip.Content
-          className={`
-            rounded
-            p-2
-            bg-slate4
-            text-sm
-            text-slate12
-            leading-none
-            shadow-popover-sm
-            select-none
-            will-change-transform-opacity
-            data-[side=top]:animate-slideDownAndFade
-            data-[side=right]:animate-slideLeftAndFade
-            data-[side=bottom]:animate-slideUpAndFade
-            data-[side=left]:animate-slideRightAndFade
-            dark:bg-white
-            dark:text-slate4
-          `}
-          sideOffset={5}
-        >
-          Settings
-          <Tooltip.Arrow className="fill-slate4 dark:fill-white" />
-        </Tooltip.Content>
-      </Tooltip.Portal>
+        }
+        content="Settings"
+        hasPopover
+      />
       <Popover.Portal>
         <Popover.Content
           className={`

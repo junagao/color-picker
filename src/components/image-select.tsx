@@ -4,6 +4,7 @@ import * as Popover from '@radix-ui/react-popover'
 import * as Tooltip from '@radix-ui/react-tooltip'
 import {IconButton} from './icon-button'
 import {ImageDropzone} from './image-dropzone'
+import {TooltipButton} from './tooltip-button'
 
 type ImageSelectProps = {
   setImage: Dispatch<SetStateAction<string>>
@@ -27,13 +28,15 @@ export const ImageSelect = ({setImage}: ImageSelectProps) => {
     <div className="flex justify-end">
       <Popover.Root open={isImageSelectOpen} onOpenChange={setIsImageSelectOpen}>
         <Tooltip.Root>
-          <Popover.Trigger asChild>
-            <Tooltip.Trigger asChild>
+          <TooltipButton
+            trigger={
               <IconButton aria-label="Select image">
                 <ImageIcon />
               </IconButton>
-            </Tooltip.Trigger>
-          </Popover.Trigger>
+            }
+            content="Select image"
+            hasPopover
+          />
           <Tooltip.Portal>
             <Tooltip.Content
               className={`

@@ -19,6 +19,7 @@ import {
   getFinalCmyk,
 } from './utils'
 import {Settings} from './components/settings'
+import {TooltipButton} from './components/tooltip-button'
 
 export type Color = {
   isSelected: boolean
@@ -196,72 +197,24 @@ function App() {
           />
           <div className="flex gap-2">
             {colors.length ? (
-              <>
-                <Tooltip.Root>
-                  <Tooltip.Trigger asChild>
+              <Tooltip.Root>
+                <TooltipButton
+                  trigger={
                     <IconButton aria-label="Copy palette" onClick={handleCopyPalette}>
                       <CopyIcon />
                     </IconButton>
-                  </Tooltip.Trigger>
-                  <Tooltip.Portal>
-                    <Tooltip.Content
-                      className={`
-                        rounded
-                        p-2
-                        bg-slate4
-                        text-sm
-                        text-slate12
-                        leading-none
-                        shadow-popover-sm
-                        select-none
-                        will-change-transform-opacity
-                        data-[side=top]:animate-slideDownAndFade
-                        data-[side=right]:animate-slideLeftAndFade
-                        data-[side=bottom]:animate-slideUpAndFade
-                        data-[side=left]:animate-slideRightAndFade
-                        dark:bg-white
-                        dark:text-slate4
-                      `}
-                      sideOffset={5}
-                    >
-                      Copy palette
-                      <Tooltip.Arrow className="fill-slate4 dark:fill-white" />
-                    </Tooltip.Content>
-                  </Tooltip.Portal>
-                </Tooltip.Root>
-                <Tooltip.Root>
-                  <Tooltip.Trigger asChild>
+                  }
+                  content="Copy palette"
+                />
+                <TooltipButton
+                  trigger={
                     <IconButton aria-label="Clear palette" onClick={handleClearPalette}>
                       <TrashIcon />
                     </IconButton>
-                  </Tooltip.Trigger>
-                  <Tooltip.Portal>
-                    <Tooltip.Content
-                      className={`
-                      rounded
-                      p-2
-                      bg-slate4
-                      text-sm
-                      text-slate12
-                      leading-none
-                      shadow-popover-sm
-                      select-none
-                      will-change-transform-opacity
-                      data-[side=top]:animate-slideDownAndFade
-                      data-[side=right]:animate-slideLeftAndFade
-                      data-[side=bottom]:animate-slideUpAndFade
-                      data-[side=left]:animate-slideRightAndFade
-                      dark:bg-white
-                      dark:text-slate4
-                    `}
-                      sideOffset={5}
-                    >
-                      Clear palette
-                      <Tooltip.Arrow className="fill-slate4 dark:fill-white" />
-                    </Tooltip.Content>
-                  </Tooltip.Portal>
-                </Tooltip.Root>
-              </>
+                  }
+                  content="Clear palette"
+                />
+              </Tooltip.Root>
             ) : null}
             <ImageSelect setImage={setImage} />
             <Settings format={format} paletteMode={paletteMode} setFormat={setFormat} setPaletteMode={setPaletteMode} />
