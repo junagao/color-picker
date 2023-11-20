@@ -6,8 +6,6 @@ import react from '@vitejs/plugin-react'
 export default ({mode}) => {
   process.env = {...process.env, ...loadEnv(mode, process.cwd())}
 
-  console.log('debug', process.env.GA_TRACKING_ID)
-
   return defineConfig({
     plugins: [
       react(),
