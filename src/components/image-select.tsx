@@ -131,7 +131,7 @@ export const ImageSelect = ({setImage}: ImageSelectProps) => {
                 </div>
                 <p className="text-slate4 text-sm dark:text-slate11">or</p>
                 <ImageDropzone setImage={setImage} setIsImageSelectOpen={setIsImageSelectOpen}>
-                  Drop another image here
+                  Drop image here or click to select
                 </ImageDropzone>
               </div>
               <Popover.Close

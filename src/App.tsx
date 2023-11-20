@@ -213,7 +213,7 @@ function App() {
           </div>
         ) : (
           <div className="mt-4">
-            <ImageDropzone setImage={setImage}>Drop image here</ImageDropzone>
+            <ImageDropzone setImage={setImage}>Drop image here or click to select</ImageDropzone>
           </div>
         )}
         <Notification
