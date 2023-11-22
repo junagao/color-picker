@@ -11,8 +11,8 @@ https://color-picker.junagao.com/
 - eyedropper with magnifier
 - copy color code to clipboard
 - copy color palette to clipboard
-- download created color palette
-- remove previously selected color
+- remove color
+- remove palette
 - choose preferred format:
   - legacy css syntax: numbers + commas: `rgb(255, 0, 0)`
   - legacy css syntax: only numbers + commas: `255, 0, 0`
