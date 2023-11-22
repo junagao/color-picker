@@ -2,8 +2,6 @@
 
 A simple tool to select colors from an image and copy colors to clipboard (single or palette).
 
-## Demo
-
 https://color-picker.junagao.com/
 
 ## Features
