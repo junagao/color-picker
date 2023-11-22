@@ -1,30 +1,28 @@
+import type Color from 'colorjs.io'
 import {CopyIcon} from '@radix-ui/react-icons'
 import * as HoverCard from '@radix-ui/react-hover-card'
-import {ColorFormat, Color, Colors, ColorMode} from '../App'
-import {getFinalCmyk, getFinalHex, getFinalHsb, getFinalHsl, getFinalRgb} from '../utils'
+
+import {ColorFormat, ColorSpace, Colors} from '../App'
+import {formatColor, formatCmyk, formatHex, formatHsb} from '../utils'
 
 type ColorSwatchesProps = {
   colors: Colors
   format: ColorFormat
   handleCopyColor: (color: string) => void
-  handleRemoveColor: (rgb: string) => void
+  handleRemoveColor: (color: Color) => void
 }
 
 export const ColorSwatches = ({colors, format, handleCopyColor, handleRemoveColor}: ColorSwatchesProps) => (
   <div className="flex items-center">
     <div className="flex flex-wrap gap-2">
-      {colors.map(({cmyk, hex, hsb, hsl, rgb, isSelected}) => (
+      {colors.map(({color, isSelected}) => (
         <ColorSwatch
-          key={hex}
-          cmyk={cmyk}
+          key={color.coords.toString()}
           format={format}
           handleCopyColor={handleCopyColor}
           handleRemoveColor={handleRemoveColor}
-          hex={hex}
-          hsb={hsb}
-          hsl={hsl}
           isSelected={isSelected}
-          rgb={rgb}
+          color={color}
         />
       ))}
     </div>
@@ -32,33 +30,25 @@ export const ColorSwatches = ({colors, format, handleCopyColor, handleRemoveColo
 )
 
 type ColorSwatchProps = {
+  color: Color
   format: ColorFormat
   handleCopyColor: (color: string) => void
-  handleRemoveColor: (rgb: string) => void
-} & Color
+  handleRemoveColor: (color: Color) => void
+  isSelected: boolean
+}
 
-const ColorSwatch = ({
-  cmyk,
-  format,
-  handleCopyColor,
-  handleRemoveColor,
-  hex,
-  hsb,
-  hsl,
-  isSelected,
-  rgb,
-}: ColorSwatchProps) => (
+const ColorSwatch = ({color, format, handleCopyColor, handleRemoveColor, isSelected}: ColorSwatchProps) => (
   <HoverCard.Root>
     <HoverCard.Trigger asChild>
       <div
         className="rounded-full cursor-pointer w-8 h-8"
         style={{
-          background: hex,
+          background: color.toString({format: 'hex'}),
           filter: isSelected
             ? 'drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1))'
             : undefined,
         }}
-        onClick={() => handleCopyColor(getFinalRgb(format, rgb))}
+        onClick={() => handleCopyColor(formatHex(color))}
       />
     </HoverCard.Trigger>
     <HoverCard.Portal>
@@ -78,15 +68,20 @@ const ColorSwatch = ({
         sideOffset={5}
       >
         <div className="grid grid-cols-[40px_minmax(100px,_1fr)_15px] gap-2 grid-flow-row">
-          <ColorDetails color={getFinalRgb(format, rgb)} handleCopyColor={handleCopyColor} mode="rgb" />
-          <ColorDetails color={getFinalHex(format, hex)} handleCopyColor={handleCopyColor} mode="hex" />
-          <ColorDetails color={getFinalHsb(format, hsb)} handleCopyColor={handleCopyColor} mode="hsb" />
-          <ColorDetails color={getFinalHsl(format, hsl)} handleCopyColor={handleCopyColor} mode="hsl" />
-          <ColorDetails color={getFinalCmyk(format, cmyk)} handleCopyColor={handleCopyColor} mode="cmyk" />
+          <ColorDetails color={formatHex(color)} handleCopyColor={handleCopyColor} space="hex" />
+          <ColorDetails color={formatColor(format, color, 'srgb')} handleCopyColor={handleCopyColor} space="rgb" />
+          <ColorDetails color={formatColor(format, color, 'hsl')} handleCopyColor={handleCopyColor} space="hsl" />
+          <ColorDetails color={formatColor(format, color, 'hwb')} handleCopyColor={handleCopyColor} space="hwb" />
+          <ColorDetails color={formatColor(format, color, 'lab')} handleCopyColor={handleCopyColor} space="lab" />
+          <ColorDetails color={formatColor(format, color, 'lch')} handleCopyColor={handleCopyColor} space="lch" />
+          <ColorDetails color={formatColor(format, color, 'oklab')} handleCopyColor={handleCopyColor} space="oklab" />
+          <ColorDetails color={formatColor(format, color, 'oklch')} handleCopyColor={handleCopyColor} space="oklch" />
+          <ColorDetails color={formatHsb(format, color)} handleCopyColor={handleCopyColor} space="hsb" />
+          <ColorDetails color={formatCmyk(format, color)} handleCopyColor={handleCopyColor} space="cmyk" />
         </div>
         <button
           type="button"
-          onClick={() => handleRemoveColor(rgb)}
+          onClick={() => handleRemoveColor(color)}
           className="text-slate4 text-xs border border-slate10 rounded mt-4 px-2 hover:bg-slate12"
         >
           Remove color
@@ -100,15 +95,16 @@ const ColorSwatch = ({
 type ColorDetailsProps = {
   color: string
   handleCopyColor: (color: string) => void
-  mode: ColorMode
+  space: ColorSpace
 }
 
-const ColorDetails = ({color, handleCopyColor, mode}: ColorDetailsProps) => (
-  <>
-    <div className="text-sm text-slate1 font-bold">{mode}:</div>
-    <div className="text-sm text-slate1">{color}</div>
-    <button className="text-slate9 hover:text-slate1" type="button" onClick={() => handleCopyColor(color)}>
-      <CopyIcon />
-    </button>
-  </>
-)
+const ColorDetails = ({color, handleCopyColor, space}: ColorDetailsProps) =>
+  color && (
+    <>
+      <div className="text-sm text-slate1 font-bold">{space}:</div>
+      <div className="text-sm text-slate1">{color}</div>
+      <button className="text-slate9 hover:text-slate1" type="button" onClick={() => handleCopyColor(color)}>
+        <CopyIcon />
+      </button>
+    </>
+  )

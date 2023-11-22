@@ -3,18 +3,19 @@ import {Cross2Icon, MixerHorizontalIcon} from '@radix-ui/react-icons'
 import * as Popover from '@radix-ui/react-popover'
 import * as RadioGroup from '@radix-ui/react-radio-group'
 import * as Tooltip from '@radix-ui/react-tooltip'
+
+import {ColorFormat, ColorSpace} from '../App'
 import {IconButton} from './icon-button'
-import {ColorFormat, ColorMode} from '../App'
 import {TooltipButton} from './tooltip-button'
 
 type SettingsProps = {
   format: ColorFormat
-  paletteMode: ColorMode
+  paletteSpace: ColorSpace
   setFormat: Dispatch<SetStateAction<ColorFormat>>
-  setPaletteMode: Dispatch<SetStateAction<ColorMode>>
+  setPaletteSpace: Dispatch<SetStateAction<ColorSpace>>
 }
 
-export const Settings = ({format, paletteMode, setFormat, setPaletteMode}: SettingsProps) => (
+export const Settings = ({format, paletteSpace, setFormat, setPaletteSpace}: SettingsProps) => (
   <Popover.Root>
     <Tooltip.Root>
       <TooltipButton
@@ -50,44 +51,75 @@ export const Settings = ({format, paletteMode, setFormat, setPaletteMode}: Setti
               className="flex flex-col gap-2.5"
               value={format}
               onValueChange={e =>
-                (e === 'mode-with-numbers' ||
-                  e === 'only-numbers' ||
-                  e === 'mode-with-degrees-or-percentage' ||
-                  e === 'only-numbers-with-degrees-or-percentage') &&
+                (e === 'legacy-syntax-numbers-commas' ||
+                  e === 'legacy-syntax-percentage-commas' ||
+                  e === 'legacy-syntax-only-numbers-commas' ||
+                  e === 'legacy-syntax-only-percentage-commas' ||
+                  e === 'modern-syntax-numbers' ||
+                  e === 'modern-syntax-percentage' ||
+                  e === 'modern-syntax-only-numbers' ||
+                  e === 'modern-syntax-only-percentage') &&
                 setFormat(e)
               }
               aria-label="Format"
             >
               <fieldset>
                 <legend className="text-sm font-medium text-slate9 mb-1 dark:text-slate11">Format:</legend>
-                <RadioItem id="mode-with-numbers" example="rgb(100, 50, 60)">
-                  Color mode with numbers
+                <RadioItem id="legacy-syntax-numbers-commas" example="rgb(255, 0, 0)">
+                  Legacy syntax: numbers + commas
                 </RadioItem>
-                <RadioItem id="only-numbers" example="100, 50, 60">
-                  Only numbers
+                <RadioItem id="legacy-syntax-only-numbers-commas" example="255, 0, 0">
+                  Legacy syntax: only numbers + commas
                 </RadioItem>
-                <RadioItem id="mode-with-degrees-or-percentage" example="rgb(100%, 50%, 60%)">
-                  Color mode with %
+                <RadioItem id="legacy-syntax-percentage-commas" example="rgb(100%, 0%, 0%)">
+                  Legacy syntax: percentage + commas
                 </RadioItem>
-                <RadioItem id="only-numbers-with-degrees-or-percentage" example="100%, 50%, 60%">
-                  Only numbers with %
+                <RadioItem id="legacy-syntax-only-percentage-commas" example="100%, 0%, 0%">
+                  Legacy syntax: only percentage + commas
+                </RadioItem>
+                <RadioItem id="modern-syntax-numbers" example="rgb(255 0 0)">
+                  Modern syntax: numbers
+                </RadioItem>
+                <RadioItem id="modern-syntax-only-numbers" example="255 0 0">
+                  Modern syntax: only numbers
+                </RadioItem>
+                <RadioItem id="modern-syntax-percentage" example="rgb(100% 0% 0%)">
+                  Modern syntax: percentage
+                </RadioItem>
+                <RadioItem id="modern-syntax-only-percentage" example="100% 0% 0%">
+                  Modern syntax: only percentage
                 </RadioItem>
               </fieldset>
             </RadioGroup.Root>
             <RadioGroup.Root
               className="flex flex-col gap-2.5 mt-4"
-              value={paletteMode}
+              value={paletteSpace}
               onValueChange={e =>
-                (e === 'cmyk' || e === 'hex' || e === 'hsb' || e === 'hsl' || e === 'rgb') && setPaletteMode(e)
+                (e === 'hex' ||
+                  e === 'rgb' ||
+                  e === 'hsl' ||
+                  e === 'hwb' ||
+                  e === 'lab' ||
+                  e === 'oklab' ||
+                  e === 'lch' ||
+                  e === 'oklch' ||
+                  e === 'hsb' ||
+                  e === 'cmyk') &&
+                setPaletteSpace(e)
               }
-              aria-label="Color palette mode"
+              aria-label="Palette color space"
             >
               <fieldset>
-                <legend className="text-sm font-medium text-slate9 mb-1 dark:text-slate11">Color palette mode:</legend>
-                <RadioItem id="rgb">rgb</RadioItem>
+                <legend className="text-sm font-medium text-slate9 mb-1 dark:text-slate11">Palette color space:</legend>
                 <RadioItem id="hex">hex</RadioItem>
-                <RadioItem id="hsb">hsb</RadioItem>
+                <RadioItem id="rgb">rgb</RadioItem>
                 <RadioItem id="hsl">hsl</RadioItem>
+                <RadioItem id="hwb">hwb</RadioItem>
+                <RadioItem id="lab">lab</RadioItem>
+                <RadioItem id="oklab">oklab</RadioItem>
+                <RadioItem id="lch">lch</RadioItem>
+                <RadioItem id="oklch">oklch</RadioItem>
+                <RadioItem id="hsb">hsb</RadioItem>
                 <RadioItem id="cmyk">cmyk</RadioItem>
               </fieldset>
             </RadioGroup.Root>

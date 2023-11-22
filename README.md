@@ -2,6 +2,10 @@
 
 A simple tool to select colors from an image and copy colors to clipboard (single or palette).
 
+## Demo
+
+https://color-picker.junagao.com/
+
 ## Features
 
 - select colors from a single or multiple images
@@ -11,9 +15,14 @@ A simple tool to select colors from an image and copy colors to clipboard (singl
 - copy color palette to clipboard
 - download created color palette
 - remove previously selected color
-- choose preferred format and color palette mode
-- supported color modes: rgb, hex, hsb, hsl, cmyk (more to come)
-
-## Demo
-
-https://color-picker.junagao.com/
+- choose preferred format:
+  - legacy css syntax: numbers + commas: `rgb(255, 0, 0)`
+  - legacy css syntax: only numbers + commas: `255, 0, 0`
+  - legacy css syntax: percentage + commas: `rgb(100%, 0%, 0%)`
+  - legacy css syntax: only percentage + commas: `100%, 0%, 0%`
+  - modern css syntax: numbers: `rgb(255 0 0)`
+  - modern css syntax: only numbers: `255 0 0`
+  - modern css syntax: percentage: `rgb(100% 0% 0%)`
+  - modern css syntax: only percentage: `100% 0% 0%`
+- choose palette color space
+- supported color spaces: `hex`, `rgb`, `hsl`, `hwb`, `lab`, `oklab`, `lch`, `oklch`, `hsb`, `cmyk`

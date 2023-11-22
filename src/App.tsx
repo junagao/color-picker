@@ -1,54 +1,42 @@
 import {MutableRefObject, useCallback, useEffect, useRef, useState} from 'react'
+import Color from 'colorjs.io'
 import {CopyIcon, TrashIcon} from '@radix-ui/react-icons'
 import * as Tooltip from '@radix-ui/react-tooltip'
-import {ColorSwatches} from './components/color-swatches'
-import {IconButton} from './components/icon-button'
-import {ImageDropzone} from './components/image-dropzone'
-import {ImagePreview} from './components/image-preview'
-import {ImageSelect} from './components/image-select'
-import {Notification} from './components/notification'
+
 import {
-  rgbToHex,
-  rgbToHsb,
-  rgbToHsl,
-  rgbToCmyk,
-  getFinalRgb,
-  getFinalHex,
-  getFinalHsb,
-  getFinalHsl,
-  getFinalCmyk,
-} from './utils'
-import {Settings} from './components/settings'
-import {TooltipButton} from './components/tooltip-button'
-
-export type Color = {
-  isSelected: boolean
-  cmyk: string
-  hex: string
-  hsb: string
-  hsl: string
-  rgb: string
-}
-
-export type Colors = Color[]
+  ColorSwatches,
+  IconButton,
+  ImageDropzone,
+  ImagePreview,
+  ImageSelect,
+  Notification,
+  Settings,
+  TooltipButton,
+} from './components'
+import {formatCmyk, formatColor, formatHex, formatHsb} from './utils'
 
 export type ColorFormat =
-  | 'mode-with-numbers'
-  | 'only-numbers'
-  | 'mode-with-degrees-or-percentage'
-  | 'only-numbers-with-degrees-or-percentage'
+  | 'legacy-syntax-numbers-commas'
+  | 'legacy-syntax-percentage-commas'
+  | 'legacy-syntax-only-numbers-commas'
+  | 'legacy-syntax-only-percentage-commas'
+  | 'modern-syntax-numbers'
+  | 'modern-syntax-percentage'
+  | 'modern-syntax-only-numbers'
+  | 'modern-syntax-only-percentage'
 
-export type ColorMode = 'hex' | 'rgb' | 'cmyk' | 'hsb' | 'hsl'
+export type ColorSpace = 'hex' | 'rgb' | 'srgb' | 'cmyk' | 'hsb' | 'hsl' | 'hwb' | 'lab' | 'lch' | 'oklab' | 'oklch'
+
+export type Colors = {
+  isSelected: boolean
+  color: Color
+}[]
 
 function App() {
   const [image, setImage] = useState<string>('')
-  const [format, setFormat] = useState<ColorFormat>('mode-with-numbers')
-  const [paletteMode, setPaletteMode] = useState<ColorMode>('rgb')
-  const [cmyk, setCmyk] = useState<string>('')
-  const [hex, setHex] = useState<string>('')
-  const [hsb, setHsb] = useState<string>('')
-  const [hsl, setHsl] = useState<string>('')
-  const [rgb, setRgb] = useState<string>('')
+  const [format, setFormat] = useState<ColorFormat>('legacy-syntax-numbers-commas')
+  const [paletteSpace, setPaletteSpace] = useState<ColorSpace>('rgb')
+  const [color, setColor] = useState<Color>(new Color('srgb', [0, 0, 0]))
   const [colors, setColors] = useState<Colors>([])
   const [notificationMsg, setNotificationMsg] = useState<string>('')
   const [isNotificationOpen, setIsNotificationOpen] = useState<boolean>(false)
@@ -104,19 +92,16 @@ function App() {
       if (bounding) {
         const x = e.clientX - bounding.left
         const y = e.clientY - bounding.top
-        const pixel = canvas?.getContext('2d', {willReadFrequently: true})?.getImageData(x, y, 1, 1)
+        const context = canvas?.getContext('2d', {willReadFrequently: true, colorSpace: 'srgb'})
+        const pixel = context?.getImageData(x, y, 1, 1)
         data = pixel && pixel.data
       }
       if (data && circle) {
-        const r = data[0]
-        const g = data[1]
-        const b = data[2]
+        const [r, g, b] = data
         const rgb = `rgb(${r}, ${g}, ${b})`
-        setRgb(rgb)
-        setHex(rgbToHex(r, g, b))
-        setHsl(rgbToHsl(r, g, b))
-        setHsb(rgbToHsb(r, g, b))
-        setCmyk(rgbToCmyk(r, g, b))
+        const color = new Color('srgb', [r / 255, g / 255, b / 255])
+        setColor(color)
+
         circle.style.display = 'block'
         circle.style.left = e.pageX + 'px'
         circle.style.top = e.pageY + 'px'
@@ -125,24 +110,18 @@ function App() {
     }
 
     const handleSelectColor = () => {
-      handleCopyColor(rgb)
-      const isColorAlreadySelected: boolean = colors.some(c => c.rgb === rgb)
+      const isColorAlreadySelected: boolean = colors.some(c => c.color === color)
       if (isColorAlreadySelected) {
-        setNotificationMsg(`Color already selected! ${rgb} copied to clipboard`)
+        setNotificationMsg(`Color already selected!`)
         setIsError(true)
         handleShowNotification()
-      }
-      if (!isColorAlreadySelected) {
+      } else {
         setIsError(false)
-        setColors(prevColors => [
-          ...prevColors.map(color => ({...color, isSelected: false})),
-          {rgb, hex, hsb, hsl, cmyk, isSelected: true},
-        ])
+        setColors(prev => [...prev.map(color => ({...color, isSelected: false})), {color, isSelected: true}])
       }
     }
 
     const handleClearColor = () => {
-      setRgb('')
       if (circle) {
         circle.style.display = 'none'
       }
@@ -157,7 +136,7 @@ function App() {
       canvas?.removeEventListener('click', handleSelectColor)
       canvas?.removeEventListener('mouseleave', handleClearColor)
     }
-  }, [cmyk, colors, handleCopyColor, handleShowNotification, hex, hsb, hsl, image, rgb])
+  }, [handleCopyColor, handleShowNotification, image, color, colors])
 
   useEffect(() => {
     return () => clearTimeout(notificationTimerRef.current)
@@ -168,21 +147,50 @@ function App() {
   }
 
   const handleCopyPalette = async () => {
-    setNotificationMsg(`Color palette copied to clipboard!`)
-    handleShowNotification()
-    const colorArray = colors.map(
-      color =>
-        (paletteMode === 'rgb' && getFinalRgb(format, color.rgb)) ||
-        (paletteMode === 'hex' && getFinalHex(format, color.hex)) ||
-        (paletteMode === 'hsb' && getFinalHsb(format, color.hsb)) ||
-        (paletteMode === 'hsl' && getFinalHsl(format, color.hsl)) ||
-        (paletteMode === 'cmyk' && getFinalCmyk(format, color.cmyk)),
-    )
-    await navigator.clipboard.writeText(JSON.stringify(colorArray))
+    if (
+      format.includes('legacy') &&
+      (paletteSpace === 'lab' ||
+        paletteSpace === 'lch' ||
+        paletteSpace === 'oklab' ||
+        paletteSpace === 'oklch' ||
+        paletteSpace === 'hwb')
+    ) {
+      setNotificationMsg(`Color space does not exist in the selected format.`)
+      handleShowNotification()
+      setIsError(true)
+    } else {
+      const colorArray = colors.map(c => {
+        switch (paletteSpace) {
+          case 'hex':
+            return formatHex(c.color)
+          case 'rgb':
+            return formatColor(format, c.color, 'srgb')
+          case 'hsl':
+            return formatColor(format, c.color, 'hsl')
+          case 'hwb':
+            return formatColor(format, c.color, 'hwb')
+          case 'lab':
+            return formatColor(format, c.color, 'lab')
+          case 'oklab':
+            return formatColor(format, c.color, 'oklab')
+          case 'lch':
+            return formatColor(format, c.color, 'lch')
+          case 'oklch':
+            return formatColor(format, c.color, 'oklch')
+          case 'hsb':
+            return formatHsb(format, c.color)
+          case 'cmyk':
+            return formatCmyk(format, c.color)
+        }
+      })
+      setNotificationMsg(`Color palette copied to clipboard!`)
+      handleShowNotification()
+      await navigator.clipboard.writeText(JSON.stringify(colorArray))
+    }
   }
 
-  const handleRemoveColor = useCallback((rgb: string) => {
-    setColors(prevColors => prevColors.filter(color => color.rgb !== rgb))
+  const handleRemoveColor = useCallback((color: Color) => {
+    setColors(prevColors => prevColors.filter(c => c.color !== color))
   }, [])
 
   return (
@@ -217,7 +225,12 @@ function App() {
               </Tooltip.Root>
             ) : null}
             <ImageSelect setImage={setImage} />
-            <Settings format={format} paletteMode={paletteMode} setFormat={setFormat} setPaletteMode={setPaletteMode} />
+            <Settings
+              format={format}
+              paletteSpace={paletteSpace}
+              setFormat={setFormat}
+              setPaletteSpace={setPaletteSpace}
+            />
           </div>
         </div>
         {image ? (
