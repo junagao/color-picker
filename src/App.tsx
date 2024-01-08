@@ -194,35 +194,39 @@ function App() {
   }, [])
 
   return (
-    <Tooltip.Provider>
-      <div className="min-w-[75vw] mb-40 dark:bg-bg-gray-950">
-        <div className="flex justify-between w-[75vw] gap-4">
-          <ColorSwatches
-            colors={colors}
-            format={format}
-            handleCopyColor={handleCopyColor}
-            handleRemoveColor={handleRemoveColor}
-          />
+    <div className="min-w-[75vw] mb-40 dark:bg-bg-gray-950">
+      <div className="flex justify-between w-[75vw] gap-4">
+        <ColorSwatches
+          colors={colors}
+          format={format}
+          handleCopyColor={handleCopyColor}
+          handleRemoveColor={handleRemoveColor}
+        />
+        <Tooltip.Provider>
           <div className="flex gap-2">
             {colors.length ? (
-              <Tooltip.Root>
-                <TooltipButton
-                  trigger={
-                    <IconButton aria-label="Copy palette" onClick={handleCopyPalette}>
-                      <CopyIcon />
-                    </IconButton>
-                  }
-                  content="Copy palette"
-                />
-                <TooltipButton
-                  trigger={
-                    <IconButton aria-label="Clear palette" onClick={handleClearPalette}>
-                      <TrashIcon />
-                    </IconButton>
-                  }
-                  content="Clear palette"
-                />
-              </Tooltip.Root>
+              <>
+                <Tooltip.Root>
+                  <TooltipButton
+                    trigger={
+                      <IconButton aria-label="Copy palette" onClick={handleCopyPalette}>
+                        <CopyIcon />
+                      </IconButton>
+                    }
+                    content="Copy palette"
+                  />
+                </Tooltip.Root>
+                <Tooltip.Root>
+                  <TooltipButton
+                    trigger={
+                      <IconButton aria-label="Clear palette" onClick={handleClearPalette}>
+                        <TrashIcon />
+                      </IconButton>
+                    }
+                    content="Clear palette"
+                  />
+                </Tooltip.Root>
+              </>
             ) : null}
             <ImageSelect setImage={setImage} />
             <Settings
@@ -232,25 +236,25 @@ function App() {
               setPaletteSpace={setPaletteSpace}
             />
           </div>
-        </div>
-        {image ? (
-          <div>
-            <div ref={circleRef} className="w-40 h-40 rounded-full absolute hidden z-50"></div>
-            <ImagePreview ref={canvasRef} />
-          </div>
-        ) : (
-          <div className="mt-4">
-            <ImageDropzone setImage={setImage}>Drop image here or click to select</ImageDropzone>
-          </div>
-        )}
-        <Notification
-          isError={isError}
-          message={notificationMsg}
-          open={isNotificationOpen}
-          setOpen={setIsNotificationOpen}
-        />
+        </Tooltip.Provider>
       </div>
-    </Tooltip.Provider>
+      {image ? (
+        <div>
+          <div ref={circleRef} className="w-40 h-40 rounded-full absolute hidden z-50"></div>
+          <ImagePreview ref={canvasRef} />
+        </div>
+      ) : (
+        <div className="mt-4">
+          <ImageDropzone setImage={setImage}>Drop image here or click to select</ImageDropzone>
+        </div>
+      )}
+      <Notification
+        isError={isError}
+        message={notificationMsg}
+        open={isNotificationOpen}
+        setOpen={setIsNotificationOpen}
+      />
+    </div>
   )
 }
 
