@@ -4,6 +4,8 @@ A simple tool to select colors from an image and copy colors to clipboard (singl
 
 https://color-picker.junagao.com/
 
+![Screenshot](images/screenshot-1.png)
+
 ## Features
 
 - select colors from a single or multiple images
